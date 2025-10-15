@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-*gut*lmzjrm!j!930zat9h0t+(b^o4oti3r5wuf@@bd6c0zy^=
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    "https://eco-friends.onrender.com",
+    "eco-friends.onrender.com",
      "localhost",
     "127.0.0.1",
 ]
