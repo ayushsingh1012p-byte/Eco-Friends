@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Eco-Store{% endblock %}
+
+{% block content %}
+
+<div class="main-content-store">
+    <h2>Welcome to the Eco-Store!</h2>
+    <p>Here you can find eco-friendly products to support your sustainable lifestyle.</p>
+    <div class="d-flex  justify-content-center align-items-center">
+        <div class="card mt-3 d-flex justify-content-center align-items-center text-bg-success mb-3"
+            style="width:fit-content;">
+            <div class="card-header" style="background: linear-gradient(135deg, #5a6edc, #6c3f9e);"> Eco-Store </div>
+        </div>
+
+    </div>
+    <div class="cards" style="gap: 10px;">
+        {% for product in products %}
+        <div class="card text-bg-light mb-3" style="max-width: 400px;">
+            <div class="card-header d-flex align-items-center gap-3" style="background: linear-gradient(135deg, #5a6edc, #6c3f9e);">
+                {% if profile.profile_picture %}
+        <img src="{{ profile.profile_picture.url }}" class="profile-pic">
+        {% else %}
+        <div class="profile-pic">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="currentColor"
+                class="bi bi-person-fill" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+            </svg>
+        </div>
+        {% endif %}
+                <span>{{product.user.username}}</span>
+            </div>
+            <div class="card-body d-flex flex-column gap-3">
+                <div class="show d-flex">
+                    <h5>{{product.name}}</h5>
+                    <span class="description overflow-auto no-scrollbar">
+                        <p>{{product.description}}</p>
+
+                    </span>
+                </div>
+                <div class="card container" style="height: 300px; max-width: 400px">
+
+                    <img src="{{ product.image.url }}" width="300"><br>
+
+                </div>
+
+                <div class="container gap-3 d-flex" style="height: 40px; max-width: 400px">
+                    <a class="btn btn-primary" style="background: linear-gradient(135deg, #5a6edc, #6c3f9e);" href="#">buy now</a>
+                    <a class="btn btn-primary" style="background: linear-gradient(135deg, #5a6edc, #6c3f9e);" href="#">add to 🛒</a>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <a href="{% url 'upload_product' %}" class="btn btn-primary add-btn" style="background: linear-gradient(135deg, #5a6edc, #6c3f9e);">
+        <i class="bi bi-plus-lg"></i> Add Product
+    </a>
+
+</div>
+
+{% endblock %}

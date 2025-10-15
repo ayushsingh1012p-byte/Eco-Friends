@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% block title %}Eco-Friends{% endblock %}
+
+
+{% block content %}
+<div class="profile-card" style="background: linear-gradient(135deg, #5a6edc, #6c3f9e);"
+    data-ecopoints="{{ profile.eco_points }}">
+    <div class="profile-main">
+        {% if profile.profile_picture %}
+        <img src="{{ profile.profile_picture.url }}" class="profile-pic">
+        {% else %}
+        <div class="profile-pic">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="currentColor"
+                class="bi bi-person-fill" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+            </svg>
+        </div>
+        {% endif %}
+        <div class="profile-info">
+            <h6 class="profile-name">{{ profile.user.username }}</h6>
+            <p class="profile-rank" style="color: azure;">Rank: {{ profile.rank }}</p>
+        </div>
+    </div>
+
+    <div class="profile-expanded">
+        <div class="bio-container no-scrollbar">
+            <p class="bio" style="color: aliceblue;">
+                {{ profile.bio }}
+            </p>
+        </div>
+        <p class="ecopoints">EcoPoints: {{ profile.eco_points }}</p>
+
+
+        <div class="exp-bar-tier" data-min="0" data-max="100">
+            <div class="exp-fill-tier"></div>
+        </div>
+        <div class="exp-bar-tier" data-min="100" data-max="500">
+            <div class="exp-fill-tier"></div>
+        </div>
+        <div class="exp-bar-tier" data-min="500" data-max="1000">
+            <div class="exp-fill-tier"></div>
+        </div>
+
+        <p class="level-text" style="color: aliceblue;">Level Progress</p>
+    </div>
+</div>
+
+<div class="main-content">
+    {% for post in posts %}
+    <div class="card text-bg-light mb-3" style="max-width: 400px;" style="background-color: grey;">
+        <div class="card-header d-flex align-items-center gap-3"
+            style="background: linear-gradient(135deg, #5a6edc, #6c3f9e);">
+            {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" class="profile-pic">
+            {% else %}
+            <div class="profile-pic">
+                <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="currentColor"
+                    class="bi bi-person-fill" viewBox="0 0 16 16">
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                </svg>
+            </div>
+            {% endif %}
+            <span>{{post.user.username}}</span>
+        </div>
+        <div class="card-body d-flex flex-column gap-3">
+            <div class="show d-flex">
+                <h5>{{post.title}}</h5>
+                <span class="description overflow-auto no-scrollbar">
+                    <p>{{post.content}}</p>
+
+                </span>
+            </div>
+            <div class="card container" style="height: 300px; max-width: 400px">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" width="300"><br>
+                {% else %}
+                <p class="text-muted">{{ post.content }}</p>
+                {% endif %}
+            </div>
+
+            <div class="container gap-3 d-flex" style="height: 40px; max-width: 400px">
+                <div class="d-flex">
+                    <button
+                        class="like-btn btn btn-sm {% if user in post.likes.all %}bi bi-heart-fill text-danger{% else %}bi bi-heart{% endif %}"
+                        data-post-id="{{ post.pk }}"></button>
+                    <button class="show-users-btn" data-post-id="{{ post.pk }}"
+                        style="background: transparent; border: none;">
+                        <h5 class="like-count">{{ post.no_of_likes }}</h5>
+                    </button>
+                </div>
+                <div>
+                    <button class="bi bi-chat mt-1"></button>
+                </div>
+                <div class="ms-auto">
+                    <small class="text-muted">{{ post.created_at|timesince }} ago</small>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+    {% endfor %}
+
+    <div id="user-popup"
+        style="display:none; position:fixed; top:20%; left:50%; transform:translate(-50%, -20%); background:white; padding:20px; border:1px solid #ccc; box-shadow:0 2px 10px rgba(0,0,0,0.1); z-index:1000;">
+        <h5>Users who liked this post:</h5>
+        <div id="user-list"></div>
+        <button onclick="document.getElementById('user-popup').style.display='none'">Close</button>
+    </div>
+
+
+    <div class="search-panel"
+        style="position: fixed; bottom: 5%; right: 20px; width: 250px; background: #f8f9fa; border-radius: 10px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <div id="user-results" style="max-height: 300px; overflow-y: auto;">
+            {% if users %}
+            {% for user in users %}
+            <div class="user-result p-2 mb-1" style="background: #e9ecef; border-radius: 5px;">
+                <a href="{% url 'profile' user.username %}" style="text-decoration: none; color: black;">
+                    {{ user.username }}
+                </a>
+            </div>
+            {% endfor %}
+            {% elif query %}
+            <p class="text-muted">No users found.</p>
+            {% endif %}
+        </div>
+        <h6>Search Users</h6>
+        <input type="text" id="user-search" class="form-control mb-2" placeholder="Search by username"
+            value="{{ query|default:'' }}">
+
+
+
+    </div>
+
+    
+
+
+
+</div>
+
+<div class="slideshow-wrapper" style="z-index: -1;">
+  <div class="slide-track">
+    <div class="quote">"The Earth does not belong to us: we belong to the Earth."</div>
+    <div class="quote">"Nature is not a place to visit. It is home."</div>
+    <div class="quote">"Live simply so others may simply live."</div>
+    <div class="quote">"The greatest threat to our planet is the belief that someone else will save it."</div>
+    <div class="quote">"In every walk with nature, one receives far more than he seeks."</div>
+  </div>
+</div>
+
+
+
+<script>
+
+    const quotes = document.querySelectorAll('.quote');
+    let index = 0;
+
+    setInterval(() => {
+        quotes[index].classList.remove('active');
+        index = (index + 1) % quotes.length;
+        quotes[index].classList.add('active');
+    }, 4000);
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const profileCards = document.querySelectorAll('.profile-card');
+
+        profileCards.forEach(card => {
+            const ecoPoints = parseInt(card.dataset.ecopoints);
+            const tiers = card.querySelectorAll('.exp-bar-tier');
+
+            tiers.forEach(tier => {
+                const min = parseInt(tier.dataset.min);
+                const max = parseInt(tier.dataset.max);
+                const fill = tier.querySelector('.exp-fill-tier');
+
+                if (ecoPoints >= min && ecoPoints < max) {
+                    tier.style.display = 'block'; // show only current tier
+                    const widthPercent = ((ecoPoints - min) / (max - min)) * 100;
+                    fill.style.width = widthPercent + '%';
+                } else {
+                    tier.style.display = 'none'; // hide other tiers
+                }
+            });
+        });
+    });
+
+
+
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const postId = this.getAttribute('data-post-id');
+            fetch(`/post_like/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Update heart icon and count
+                    if (data.liked) {
+                        this.classList.remove('bi-heart');
+                        this.classList.add('bi-heart-fill', 'text-danger');
+                    } else {
+                        this.classList.remove('bi-heart-fill', 'text-danger');
+                        this.classList.add('bi-heart');
+                    }
+                    this.closest('.d-flex').querySelector('.like-count').textContent = data.likes_count;
+                });
+        });
+    });
+
+
+    document.querySelectorAll('.show-users-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const postId = this.getAttribute('data-post-id');
+            fetch(`/liked_users/${postId}/`)
+                .then(res => res.json())
+                .then(users => {
+                    const list = users.map(u => `<li>${u.username}</li>`).join('');
+                    document.getElementById('user-list').innerHTML = `<ul>${list}</ul>`;
+                    document.getElementById('user-popup').style.display = 'block';
+                });
+        });
+    });
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('user-search');
+        const resultsDiv = document.getElementById('user-results');
+
+        let timeout = null;
+
+        searchInput.addEventListener('keyup', () => {
+            clearTimeout(timeout);
+            const query = searchInput.value.trim();
+
+            // Wait 300ms after typing stops
+            timeout = setTimeout(() => {
+                // Make AJAX GET request to current page with query
+                fetch(`?q=${query}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary DOM element to parse HTML
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newResults = doc.getElementById('user-results');
+                        resultsDiv.innerHTML = newResults.innerHTML;
+                    });
+            }, 300);
+        });
+    });
+
+
+
+</script>
+
+{% endblock %}

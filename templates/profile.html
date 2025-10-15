@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}{{ profile.user.username }}'s Profile{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left Sidebar: Profile Info -->
+        <div class="col-md-4">
+            <div class="card text-center p-3">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;">
+                {% else %}
+                    <div class="bg-secondary rounded-circle mb-3 d-flex align-items-center justify-content-center" style="width:150px; height:150px;">
+                        <i class="bi bi-person-fill text-white" style="font-size: 3rem;"></i>
+                    </div>
+                {% endif %}
+
+                <h4>{{ profile.user.username }}</h4>
+                <p class="text-muted">Rank: {{ profile.rank|title }}</p>
+                <p>EcoPoints: {{ profile.eco_points }}</p>
+
+                <!-- EXP bar tiers -->
+                <div class="exp-bar-tier my-2" data-min="0" data-max="100">
+                    <div class="exp-fill-tier"></div>
+                </div>
+                <div class="exp-bar-tier my-2" data-min="100" data-max="500">
+                    <div class="exp-fill-tier"></div>
+                </div>
+                <div class="exp-bar-tier my-2" data-min="500" data-max="1000">
+                    <div class="exp-fill-tier"></div>
+                </div>
+
+                <p class="level-text mt-2">Level Progress</p>
+
+                <div class="bio-container mt-3">
+                    <p class="bio text-muted">{{ profile.bio|default:"No bio added yet." }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: User Posts -->
+        <div class="col-md-8">
+            <h5>{{ profile.user.username }}'s Posts</h5>
+            {% if posts %}
+                {% for post in posts %}
+    <div class="card text-bg-light mb-3" style="max-width: 400px;" style="background-color: grey;">
+        <div class="card-header d-flex align-items-center gap-3"
+            style="background: linear-gradient(135deg, #5a6edc, #6c3f9e);">
+            {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" class="profile-pic">
+            {% else %}
+            <div class="profile-pic">
+                <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="currentColor"
+                    class="bi bi-person-fill" viewBox="0 0 16 16">
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                </svg>
+            </div>
+            {% endif %}
+            <span>{{post.user.username}}</span>
+        </div>
+        <div class="card-body d-flex flex-column gap-3">
+            <div class="show d-flex">
+                <h5>{{post.title}}</h5>
+                <span class="description overflow-auto no-scrollbar">
+                    <p>{{post.content}}</p>
+
+                </span>
+            </div>
+            <div class="card container" style="height: 300px; max-width: 400px">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" width="300"><br>
+                {% else %}
+                <p class="text-muted">{{ post.content }}</p>
+                {% endif %}
+            </div>
+
+            <div class="container gap-3 d-flex" style="height: 40px; max-width: 400px">
+                <div class="d-flex">
+                    <button
+                        class="like-btn btn btn-sm {% if user in post.likes.all %}bi bi-heart-fill text-danger{% else %}bi bi-heart{% endif %}"
+                        data-post-id="{{ post.pk }}"></button>
+                    <button class="show-users-btn" data-post-id="{{ post.pk }}" style="background: transparent; border: none;">
+                        <h5 class="like-count">{{ post.no_of_likes }}</h5>
+                    </button>
+
+
+                </div>
+
+                <button class="bi bi-chat btn btn-sm"></button>
+
+            </div>
+
+        </div>
+
+    </div>
+    {% endfor %}
+            {% else %}
+                <p class="text-muted">No posts yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const profileCard = document.querySelector('.card.text-center');
+    const ecoPoints = parseInt("{{ profile.eco_points|default:0 }}", 10);
+    const tiers = profileCard.querySelectorAll('.exp-bar-tier');
+
+    tiers.forEach(tier => {
+        const min = parseInt(tier.dataset.min, 10);
+        const max = parseInt(tier.dataset.max, 10);
+        const fill = tier.querySelector('.exp-fill-tier');
+
+        if (ecoPoints >= min && ecoPoints < max) {
+            tier.style.display = 'block';
+            const widthPercent = ((ecoPoints - min) / (max - min)) * 100;
+            fill.style.width = widthPercent + '%';
+        } else {
+            tier.style.display = 'none';
+        }
+    });
+});
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Challenges{% endblock %}
+
+{% block content %}
+<div class="main-content-store">
+    <div class="cards" style="gap: 20px;">
+        {% for event in events %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                {% if event.image %}
+                <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.name }}">
+                {% else %}
+                <div class="card-img-top d-flex align-items-center justify-content-center"
+                    style="height:200px; background-color:#e9fbe9;">
+                    <i class="bi bi-calendar-event" style="font-size:50px; color:#198754;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text text-muted">{{ event.description|truncatechars:100 }}</p>
+                    <p class="mb-1"><strong>Date:</strong> {{ event.date }}</p>
+                    <p class="mb-3"><strong>Location:</strong> {{ event.location }}</p>
+                    {% if event %}
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-success mt-auto">View Details</a>
+                    {% endif %}
+                </div>
+                
+            </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
