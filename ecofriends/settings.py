@@ -50,6 +50,11 @@ EXTERNAL_APPS = [
     'map',
 ]
 
+INSTALLED_APPS += [
+    'cloudinary',
+    'cloudinary_storage',
+]
+
 INSTALLED_APPS += EXTERNAL_APPS
 
 
@@ -153,3 +158,12 @@ LOGIN_REDIRECT_URL = 'home'
 
 CSRF_COOKIE_HTTPONLY = False  # if you need JS access
 CSRF_TRUSTED_ORIGINS = ['https://eco-friends.onrender.com']
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dxfwkno8e',
+    'API_KEY': '113225211457155',
+    'API_SECRET': 'psm2noY7kHSNmTNQ9gWTxU1ZyB4',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
