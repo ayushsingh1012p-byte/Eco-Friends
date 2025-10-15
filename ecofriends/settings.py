@@ -150,3 +150,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
+
+CSRF_COOKIE_HTTPONLY = False  # if you need JS access
+CSRF_TRUSTED_ORIGINS = ['https://eco-friends.onrender.com']
